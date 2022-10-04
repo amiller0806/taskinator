@@ -1,3 +1,4 @@
+
 var taskIdCounter = 0;
 
 var formEl = document.querySelector("#task-form");
