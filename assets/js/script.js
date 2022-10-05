@@ -21,12 +21,14 @@ var taskFormHandler = function(event) {
   document.querySelector("input[name='task-name']").value = "";
   document.querySelector("select[name='task-type']").selectedIndex = 0;
 
-  // check if task is new or one being edited by seeing if it has a data-task-id attribute
+  // has data attribute, so get task id and call function to complete edit process
   var isEdit = formEl.hasAttribute("data-task-id");
 
   if (isEdit) {
     var taskId = formEl.getAttribute("data-task-id");
     completeEditTask(taskNameInput, taskTypeInput, taskId);
+
+    // no data attribute, so create object as normal and pass to createTaskEl function
   } else {
     var taskDataObj = {
       name: taskNameInput,
@@ -35,6 +37,9 @@ var taskFormHandler = function(event) {
 
     createTaskEl(taskDataObj);
   }
+  // This way, createTaskEl() will only get called if isEdit is false. If it's true, 
+  // we'll call a new function, completeEditTask(),
+  //  passing it three arguments: the name input value, type input value, and task id.
 };
 
 var createTaskEl = function(taskDataObj) {
@@ -96,7 +101,7 @@ var createTaskActions = function(taskId) {
 };
 
 var completeEditTask = function(taskName, taskType, taskId) {
-  // find task list item with taskId value
+ // find the matching task list item
   var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 
   // set new values
@@ -112,14 +117,20 @@ var completeEditTask = function(taskName, taskType, taskId) {
 };
 
 var taskButtonHandler = function(event) {
-  // get target element from event
+  // Get the element that triggered a specific event
+
+
   var targetEl = event.target;
 
+  // edit button was clicked
   if (targetEl.matches(".edit-btn")) {
     console.log("edit", targetEl);
     var taskId = targetEl.getAttribute("data-task-id");
     editTask(taskId);
-  } else if (targetEl.matches(".delete-btn")) {
+  } 
+  // delete button was clicked 
+  
+  else if (targetEl.matches(".delete-btn")) {
     console.log("delete", targetEl);
     var taskId = targetEl.getAttribute("data-task-id");
     deleteTask(taskId);
@@ -128,13 +139,13 @@ var taskButtonHandler = function(event) {
 
 var taskStatusChangeHandler = function(event) {
   console.log(event.target.value);
-
-  // find task list item based on event.target's data-task-id attribute
+  // get the task item's id
   var taskId = event.target.getAttribute("data-task-id");
 
+  // find the parent task item element based on the id
   var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 
-  // convert value to lower case
+  // get the currently selected option's value and convert to lowercase
   var statusValue = event.target.value.toLowerCase();
 
   if (statusValue === "to do") {
